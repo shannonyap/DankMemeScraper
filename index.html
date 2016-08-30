@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="dankMemes.js"></script>
+    <link rel="stylesheet" type="text/css" href="dankMemes.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <script src="semantic/dist/semantic.min.js"></script>
+  </head>
+  <body>
+    <div class="ui huge header">Dank Meme Scraper</div>
+    <div class="ui small header">For all your Dank Meme needs</div>
+    <div class="centerDiv">
+      <button class="huge ui red button" onclick="checkLoginState()">Login</button>
+    </div>
+    <button class="ui yellow button" onclick="logout()">Logout</button>
+    <div class="ui small images" id="images"></div>
+    <button class="ui blue button" onclick="moreMemes()">
+      Moar dank memes!
+    </button>
+
+  </body>
+</html>

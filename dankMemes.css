@@ -1,0 +1,24 @@
+.ui.blue.button {
+  visibility: hidden;
+}
+
+.centerDiv {
+    text-align: center;
+}
+
+.ui.red.button {
+    top: 50%;
+    margin-top: 5%;
+}
+
+.ui.huge.header {
+  text-align: center;
+  margin-top: 10% !important;
+  font-size: 5em !important;
+}
+
+.ui.small.header {
+  text-align: center;
+  margin-top: 1% !important;
+  font-size: 2em !important;
+}
