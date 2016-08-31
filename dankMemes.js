@@ -1,32 +1,3 @@
-// This function is called when someone finishes with the Login
-// Button.  See the onlogin handler attached to it in the sample
-// code below.
-function checkLoginState() {
-  FB.getLoginStatus(function(response) {
-    FB.login(function(response){
-      getRedditDankMemes();
-      FB.api(
-          "DankQualityMemes/photos?fields=images&type=uploaded" ,
-          function (response) {
-            if (response && !response.error) {
-              for (i = 0; i < response["data"].length; i++) {
-                $("<img/>").attr("src", response["data"][i]["images"][0]["source"]).appendTo($("<div/>").addClass("image").appendTo($("<div/>").addClass("item").appendTo("#images")));
-              }
-            }
-          }
-      );
-    });
-  });
-}
-
-function logout() {
-  FB.getLoginStatus(function(response) {
-    FB.logout(function(response) {
-      // user is now logged out
-    });
-  });
-}
-
 window.fbAsyncInit = function() {
   FB.init({
     appId      : '150990782010944',
@@ -49,21 +20,22 @@ window.fbAsyncInit = function() {
   // These three cases are handled in the callback function.
   FB.getLoginStatus(function(response) {
     if (response["status"] == "connected") {
-      $(".ui.red.button").remove();
+      $(".centerDiv").remove();
+      $(".ui.header").remove();
       getRedditDankMemes();
-      FB.api(
-          "DankQualityMemes/photos?fields=images&type=uploaded" ,
-          function (response) {
-            if (response && !response.error) {
-              for (i = 0; i < response["data"].length; i++) {
-                $("<img/>").attr("src", response["data"][i]["images"][0]["source"]).appendTo($("<div/>").addClass("image").appendTo($("<div/>").addClass("item").appendTo("#images")));
-              }
-            }
-          }
-      );
+      getFacebookMemes();
     } else {
-      $(".ui.blue.button").remove();
-      $(".ui.yellow.button").remove();
+      $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
+      $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
+      var loginButton = $("<button/>").addClass("huge ui red button").html("Login").appendTo($("<div/>").addClass("centerDiv").appendTo("body"));
+      $(loginButton).click(function() {
+        FB.login(function(response){
+          $(".centerDiv").remove();
+          $(".ui.header").remove();
+          getRedditDankMemes();
+          getFacebookMemes();
+        });
+      });
     }
   });
 };
@@ -76,6 +48,26 @@ window.fbAsyncInit = function() {
   js.src = "//connect.facebook.net/en_US/sdk.js";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
+
+function logout() {
+  FB.getLoginStatus(function(response) {
+    FB.logout(function(response) {
+      $(".ui.images").remove();
+      $(".ui.button").remove();
+      $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
+      $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
+      var loginButton = $("<button/>").addClass("huge ui red button").html("Login").appendTo($("<div/>").addClass("centerDiv").appendTo("body"));
+      $(loginButton).click(function() {
+        FB.login(function(response){
+          $(".centerDiv").remove();
+          $(".ui.header").remove();
+          getRedditDankMemes();
+          getFacebookMemes();
+        });
+      });
+    });
+  });
+}
 
 var lastId;
 
@@ -107,4 +99,17 @@ function moreMemes() {
           after: 't3_' + lastId
       });
   }
+}
+
+function getFacebookMemes() {
+  FB.api(
+      "DankQualityMemes/photos?fields=images&type=uploaded" ,
+      function (response) {
+        if (response && !response.error) {
+          for (i = 0; i < response["data"].length; i++) {
+            $("<img/>").attr("src", response["data"][i]["images"][0]["source"]).appendTo($("<div/>").addClass("image").appendTo($("<div/>").addClass("item").appendTo("#images")));
+          }
+        }
+      }
+  );
 }
