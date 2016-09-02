@@ -20,22 +20,14 @@ window.fbAsyncInit = function() {
   // These three cases are handled in the callback function.
   FB.getLoginStatus(function(response) {
     if (response["status"] == "connected") {
-      $(".centerDiv").remove();
-      $(".ui.header").remove();
+      createLogoutButton();
+      createImageList();
       getRedditDankMemes();
       getFacebookMemes();
+      createMoreMemesButton();
     } else {
-      $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
-      $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
-      var loginButton = $("<button/>").addClass("huge ui red button").html("Login").appendTo($("<div/>").addClass("centerDiv").appendTo("body"));
-      $(loginButton).click(function() {
-        FB.login(function(response){
-          $(".centerDiv").remove();
-          $(".ui.header").remove();
-          getRedditDankMemes();
-          getFacebookMemes();
-        });
-      });
+      createTitleElements();
+      createLoginButton();
     }
   });
 };
@@ -52,21 +44,63 @@ window.fbAsyncInit = function() {
 function logout() {
   FB.getLoginStatus(function(response) {
     FB.logout(function(response) {
-      $(".ui.images").remove();
-      $(".ui.button").remove();
-      $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
-      $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
-      var loginButton = $("<button/>").addClass("huge ui red button").html("Login").appendTo($("<div/>").addClass("centerDiv").appendTo("body"));
-      $(loginButton).click(function() {
-        FB.login(function(response){
-          $(".centerDiv").remove();
-          $(".ui.header").remove();
-          getRedditDankMemes();
-          getFacebookMemes();
-        });
-      });
+      removeMainContentElements();
+      createTitleElements();
+      createLoginButton();
     });
   });
+}
+
+/* Button methods */
+function createLoginButton() {
+  var loginButton = $("<button/>").addClass("huge ui red button").html("Login").appendTo($("<div/>").addClass("centerDiv").appendTo("body"));
+  $(loginButton).click(function() {
+    FB.login(function(response){
+      removeTitleElements();
+      createLogoutButton();
+      createImageList();
+      getRedditDankMemes();
+      getFacebookMemes();
+      createMoreMemesButton();
+    });
+  });
+}
+
+function createLogoutButton() {
+  var logoutButton = $("<button/>").addClass("ui yellow button").html("Logout").appendTo("body");
+  $(logoutButton).click(function() {
+    logout();
+  });
+}
+
+function createMoreMemesButton() {
+  var moreMemesButton = $("<button/>").addClass("ui blue button").html("Moar Dank Memes!").appendTo("body");
+  $(moreMemesButton).click(function(){
+    moreMemes();
+  });
+}
+/* End button methods */
+
+/* Remove element functions */
+function removeTitleElements() {
+  $(".centerDiv").remove();
+  $(".ui.header").remove();
+}
+
+function removeMainContentElements() {
+  $(".ui.images").remove();
+  $(".ui.button").remove();
+}
+/* End remove element functions */
+
+function createImageList() {
+  $("<div/>").addClass("ui small images").appendTo("body");
+  $('div.ui.small.images').attr('id', 'images');
+}
+
+function createTitleElements() {
+  $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
+  $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
 }
 
 var lastId;
