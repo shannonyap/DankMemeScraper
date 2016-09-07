@@ -1,3 +1,6 @@
+$(document).ready(function(){
+  $('.ui.accordion').accordion();
+});
 window.fbAsyncInit = function() {
   FB.init({
     appId      : '150990782010944',
