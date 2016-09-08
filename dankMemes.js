@@ -21,9 +21,8 @@ window.fbAsyncInit = function() {
   FB.getLoginStatus(function(response) {
     if (response["status"] == "connected") {
       createLogoutButton();
-      createAccordionList();
-      getRedditDankMemes();
-      getFacebookMemes();
+      createAccordionList("Reddit");
+      createAccordionList("Facebook");
     } else {
       createTitleElements();
       createLoginButton();
@@ -57,9 +56,8 @@ function createLoginButton() {
     FB.login(function(response){
       removeTitleElements();
       createLogoutButton();
-      createAccordionList();
-      getRedditDankMemes();
-      getFacebookMemes();
+      createAccordionList("Reddit");
+      createAccordionList("Facebook");
     });
   });
 }
@@ -71,10 +69,12 @@ function createLogoutButton() {
   });
 }
 
-function createMoreMemesButton(element) {
+function createMoreMemesButton(element, name) {
   var moreMemesButton = $("<button/>").addClass("ui blue button").html("Moar Dank Memes!").appendTo(element);
   $(moreMemesButton).click(function(){
-    moreMemes();
+    if (name == "Reddit") {
+      moreMemes();
+    }
   });
 }
 /* End button methods */
@@ -91,45 +91,53 @@ function removeMainContentElements() {
 }
 /* End remove element functions */
 
-function createAccordionList() {
+function createAccordionList(name) {
   var accordion = $("<div/>").addClass("ui styled accordion");
   var activeTitle = $("<div/>").addClass("active title");
   var activeContent = $("<div/>").addClass("active content");
   var dropDownIcon = $("<i/>").addClass("dropdown icon");
   activeTitle.appendTo(accordion);
   dropDownIcon.appendTo(activeTitle);
-  activeTitle.append("Reddit");
+  activeTitle.append(name);
   activeContent.appendTo(accordion);
   accordion.appendTo("body");
   $(accordion).accordion();
-  createAccordionTable(activeContent);
+  createAccordionTable(activeContent, name);
+  createMoreMemesButton(activeContent, name);
 }
 
-var tableBody;
-
-function createAccordionTable(activeContent) {
+function createAccordionTable(activeContent, name) {
   var table = $("<table/>").addClass("ui selectable celled table");
   var tableHead = $("<thead/>");
   $("<th/>").html("Image").appendTo(tableHead);
   $("<th/>").html("Selected").appendTo(tableHead);
   tableHead.appendTo(table);
-  tableBody = $("<tbody/>")
+  var tableBody = $("<tbody/>");
+  tableBody.attr("id", name);
   tableBody.appendTo(table);
-  createMoreMemesButton(table);
   table.appendTo(activeContent);
+  if (name == "Reddit") {
+    getRedditDankMemes(name);
+  } else {
+    getFacebookMemes(name);
+  }
 }
 
 function createTitleElements() {
-  $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
-  $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
+  var heading = $("<div/>").addClass("ui huge header").html("Dank Meme Scraper").appendTo("body");
+  var subHeading = $("<div/>").addClass("ui small header").html("For all your Dank Meme needs").appendTo("body");
 }
 
-function createTableEntries(url) {
+function createTableEntries(url, name) {
   var image = $("<img/>").attr("src", url).addClass("ui image small");
   var imageRow = $("<tr/>");
   ($("<td/>").append(image)).appendTo(imageRow);
   createCheckboxes(imageRow);
-  imageRow.appendTo(tableBody);
+  if (typeof name === 'string' || name instanceof String) {
+      imageRow.appendTo($("#" + name));
+  } else {
+      imageRow.appendTo($("#Reddit"));
+  }
 }
 
 function createCheckboxes(imageRow) {
@@ -154,7 +162,7 @@ function getRedditDankMemes(params) {
               if (!url.includes("i.imgur") && url.includes("imgur")) {
                 url = (url.replace("imgur", "i.imgur")).concat(".png");
               }
-              createTableEntries(url);
+              createTableEntries(url, params);
             }
         });
         if (children && children.length > 0) {
@@ -173,13 +181,13 @@ function moreMemes() {
   }
 }
 
-function getFacebookMemes() {
+function getFacebookMemes(name) {
   FB.api(
       "DankQualityMemes/photos?fields=images&type=uploaded" ,
       function (response) {
         if (response && !response.error) {
           for (i = 0; i < response["data"].length; i++) {
-            createTableEntries(response["data"][i]["images"][0]["source"]);
+            createTableEntries(response["data"][i]["images"][0]["source"], name);
           }
         }
       }
