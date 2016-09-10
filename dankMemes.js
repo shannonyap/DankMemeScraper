@@ -23,6 +23,22 @@ window.fbAsyncInit = function() {
       createLogoutButton();
       createAccordionList("Reddit");
       createAccordionList("Facebook");
+      var x = $("<button/>").addClass("ui green button").html("Touch me").appendTo("body");
+      $(x).click(function() {
+        var hey = document.getElementsByClassName("ui checkbox");
+        for (var i = 0; i < hey.length; i++) {
+          if ($(hey[i]).checkbox('is checked')) {
+            var h = $($($(hey[i]).parent()).parent()).children()[0];
+            console.log($(h.innerHTML).attr('src'));
+            var a = document.createElement('a');
+            a.href = $(h.innerHTML).attr('src');
+            a.download = "output.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+        }
+      });
     } else {
       createTitleElements();
       createLoginButton();
