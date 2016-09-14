@@ -23,22 +23,7 @@ window.fbAsyncInit = function() {
       createLogoutButton();
       createAccordionList("Reddit");
       createAccordionList("Facebook");
-      var x = $("<button/>").addClass("ui green button").html("Touch me").appendTo("body");
-      $(x).click(function() {
-        var hey = document.getElementsByClassName("ui checkbox");
-        for (var i = 0; i < hey.length; i++) {
-          if ($(hey[i]).checkbox('is checked')) {
-            var h = $($($(hey[i]).parent()).parent()).children()[0];
-            console.log($(h.innerHTML).attr('src'));
-            var a = document.createElement('a');
-            a.href = $(h.innerHTML).attr('src');
-            a.download = "output.png";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-          }
-        }
-      });
+      createDownloadAllMemesButton();
     } else {
       createTitleElements();
       createLoginButton();
@@ -74,6 +59,7 @@ function createLoginButton() {
       createLogoutButton();
       createAccordionList("Reddit");
       createAccordionList("Facebook");
+      createDownloadAllMemesButton();
     });
   });
 }
@@ -92,6 +78,42 @@ function createMoreMemesButton(element, name) {
       moreMemes();
     }
   });
+}
+
+function createDownloadSelectedMemesButton(element, name) {
+  var downloadButton = $("<button/>").addClass("ui green button").html("Download Selected Memes").appendTo(element);
+  $(downloadButton).click(function() {
+    var table = document.getElementById(name);
+    for (var i = 0; i < table.childNodes.length; i++) {
+      var checkbox = table.childNodes[i].childNodes[1].childNodes[0];
+      if ($(checkbox).checkbox('is checked')) {
+          var downloadLink = document.createElement('a');
+          downloadLink.href = $($($($(checkbox).parent()).parent()).children()[0].innerHTML).attr('src');
+          downloadLink.download = "output.png";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+      }
+    }
+  });
+}
+
+function createDownloadAllMemesButton() {
+  var downloadAllMemesButton = $("<button/>").addClass("ui violet button").html("Download All Memes").appendTo("body");
+    $(downloadAllMemesButton).click(function() {
+      var allCheckboxes = document.getElementsByClassName("ui checkbox");
+      for (var i = 0; i < allCheckboxes.length; i++) {
+        if ($(allCheckboxes[i]).checkbox('is checked')) {
+          var imageSource = $($($(allCheckboxes[i]).parent()).parent()).children()[0];
+          var link = document.createElement('a');
+          link.href = $(imageSource.innerHTML).attr('src');
+          link.download = "output.png";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
+    });
 }
 /* End button methods */
 
@@ -120,6 +142,7 @@ function createAccordionList(name) {
   $(accordion).accordion();
   createAccordionTable(activeContent, name);
   createMoreMemesButton(activeContent, name);
+  createDownloadSelectedMemesButton(activeContent, name);
 }
 
 function createAccordionTable(activeContent, name) {
