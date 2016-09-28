@@ -222,7 +222,7 @@ function moreMemes() {
 
 function getFacebookMemes(name) {
   FB.api(
-      "DankQualityMemes/photos?fields=images&type=uploaded" ,
+      "DankMemesFromOuterSpace/photos?fields=images&type=uploaded" ,
       function (response) {
         if (response && !response.error) {
           for (i = 0; i < response["data"].length; i++) {
